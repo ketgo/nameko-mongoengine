@@ -5,20 +5,17 @@ sudo: false
 language: python
 
 services:
-  - mongodb
-  - rabbitmq
+  - docker
 
 cache: pip
 
 python:
-  - "3.5"
   - "3.6"
   - "3.7"
-  - "nightly"  # nightly build
 
 before_script:
   - sleep 15
-  - mongo db --eval 'db.createUser({user:"test_user",pwd:"test_password",roles:["readWrite"]});'
+  - docker run -d --name some-rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 
 install:
   - make deps
