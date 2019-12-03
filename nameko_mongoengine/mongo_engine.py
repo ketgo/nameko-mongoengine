@@ -10,6 +10,9 @@ from .database import Database  # pragma: no cover
 
 
 class MongoEngine(DependencyProvider):
+    """
+        MongoEngine dependency provider for Nameko microservice framework
+    """
     default_connection_uri = "mongodb://localhost:27017"
 
     def __init__(self):

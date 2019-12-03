@@ -20,7 +20,7 @@ coverage:
 
 .PHONY: lint
 lint:
-	pylint py_abac
+	pylint nameko_mongoengine
 
 .PHONY: release
 release: test
