@@ -6,10 +6,12 @@ language: python
 
 services:
   - mongodb
+  - rabbitmq
 
 cache: pip
 
 python:
+  - "3.5"
   - "3.6"
   - "3.7"
   - "nightly"  # nightly build
