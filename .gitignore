@@ -95,3 +95,7 @@ ENV/
 # Coverage
 htmlcov/*
 .coverage
+
+# Build files
+*.egg-info/
+**/.egg-info/*
