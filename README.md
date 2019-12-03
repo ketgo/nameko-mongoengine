@@ -59,7 +59,8 @@ Other database connections defined by `MongoEngine` aliases can be accessed by:
 ```python
 @rpc
 def get(self, _id):
-    return self.engine.with_alias("your_alias").db.your_collection.find_one({'_id': _id})
+    db = self.engine.with_alias("your_alias").db
+    return db.your_collection.find_one({'_id': _id})
 ```
 
 ## Configurations

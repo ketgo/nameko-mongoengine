@@ -33,8 +33,9 @@ if __name__ == '__main__':
             'dev': [
                 'pytest~=4.0',
                 'pytest-cov~=2.6',
+                'pytest-mock~=1.12',
                 'pylint~=1.0',
-                'mongomock'
+                'mongomock~=3.18'
             ]
         },
         packages=find_packages(exclude=('tests', 'benchmarks')),

@@ -3,10 +3,10 @@
 """
 
 from mongoengine.connection import register_connection, disconnect, DEFAULT_CONNECTION_NAME
-from nameko.extensions import DependencyProvider
+from nameko.extensions import DependencyProvider  # pragma: no cover
 
-from .constants import MONGODB_URI_KEY
-from .database import Database
+from .constants import MONGODB_URI_KEY  # pragma: no cover
+from .database import Database  # pragma: no cover
 
 
 class MongoEngine(DependencyProvider):

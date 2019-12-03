@@ -91,3 +91,7 @@ ENV/
 
 # others
 **/.idea/*
+
+# Coverage
+htmlcov/*
+.coverage
