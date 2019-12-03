@@ -2,11 +2,10 @@
     Tests for dependency provider
 """
 
-import json
-
 import pytest
 from mongoengine import Document, fields
-from nameko.testing.services import dummy, entrypoint_hook
+from nameko.rpc import rpc
+from nameko.testing.services import entrypoint_hook
 
 from nameko_mongoengine import MongoEngine
 
@@ -20,15 +19,15 @@ class MockService:
     name = "mock_service"
     engine = MongoEngine()
 
-    @dummy
+    @rpc
     def write(self):
         model = MockModel()
         model.name = "testing"
         model.save()
-        return json.loads(model.to_json())
+        return model
 
-    @dummy
-    def read(self, _id: str):
+    @rpc
+    def read(self, _id):
         return MockModel.objects.get(id=_id)
 
 
@@ -46,8 +45,8 @@ def test_end_to_end(container_factory, config):
         model = write()
     assert model["name"] == "testing"
 
-    model_id: str = model["_id"]["$oid"]
+    model_id = model.pk
     with entrypoint_hook(container, "read") as read:
         model = read(model_id)
     assert model["name"] == "testing"
-    # assert model["_id"]["$oid"] == model_id
+    assert model.pk == model_id

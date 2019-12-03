@@ -15,10 +15,8 @@ pip install nameko-mongoengine
 
 ## Usage
 
-The dependency provider can be used in the following way:
+The basic usage of the dependency provider is shown:
 ```python
-import json
-
 from mongoengine import Document, fields
 from nameko_mongoengine import MongoEngine
 from nameko.rpc import rpc
@@ -36,15 +34,32 @@ class MockService:
     engine = MongoEngine()
 
     @rpc
-    def write(self, info: str) -> dict:
+    def write(self, info):
         model = MyModel()
         model.info = info
         model.save()
-        return json.loads(model.to_json())
+        return model
 
     @rpc
-    def read(self, _id: str) -> dict:
+    def read(self, _id):
         return MyModel.objects.get(id=_id)
+```
+
+The dependency `engine` exposes standard `pymongo` interface to database connection. The default `MongoEngine` database connection can be accessed by:
+```python
+class MockService:
+    name = "mock_service"
+    engine = MongoEngine()
+
+    @rpc
+    def get(self, _id):
+        return self.engine.db.your_collection.find_one({'_id': _id})
+```
+Other database connections defined by `MongoEngine` aliases can be accessed by:
+```python
+@rpc
+def get(self, _id):
+    return self.engine.with_alias("your_alias").db.your_collection.find_one({'_id': _id})
 ```
 
 ## Configurations
@@ -58,12 +73,10 @@ MONGODB_URI: mongodb://localhost:27017/dbname?replicaSet=replset
 
 # or
 # ---- with aliases
-MONGODB:
+MONGODB_URI:
   default: mongodb://localhost:27017/dbname?replicaSet=replset
   "<alias>": "<uri>"
 ```
-
-**Note:** `MONGODB` parameter overrides `MONGODB_URI`.
 
 ### Environment Variables
 
@@ -72,7 +85,21 @@ MONGODB_URI='mongodb://localhost:27017/dbname?replicaSet=replset'
 
 # or
 # ---- with aliases
-MONGODB='{"default": "mongodb://localhost:27017/dbname?replicaSet=replset", "<alias>": "<uri>"}'
+MONGODB_URI='{"default": "mongodb://localhost:27017/dbname?replicaSet=replset", "<alias>": "<uri>"}'
 ```
 
-**Note:** `MONGODB` environment variable overrides `MONGODB_URI`.
+## Developers
+
+To perform development tasks and run tests run:
+```bash
+$ pip install -e .[dev]			# to install all dependencies
+$ docker run -d --restart=always --name some-rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management   # Run rabbitmq-management server
+$ docker run --rm -d -p 27017:27017 mongo			# Run mongodb server on docker
+$ pytest --cov=nameko_mongoengine tests/			# to get coverage report
+$ pylint nameko_mongoengine			# to check code quality with PyLint
+```
+Optionally you can use `make`.
+
+## Contributions
+
+Pull requests always welcomed. Thanks!
