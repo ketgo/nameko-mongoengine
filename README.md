@@ -1,4 +1,10 @@
 # nameko-mongoengine
+
+[![Build Status](https://travis-ci.com/ketgo/nameko-mongoengine.svg?branch=master)](https://travis-ci.com/ketgo/nameko-mongoengine)
+[![codecov.io](https://codecov.io/gh/ketgo/nameko-mongoengine/coverage.svg?branch=master)](https://codecov.io/gh/ketgo/nameko-mongoengine/coverage.svg?branch=master)
+[![Apache 2.0 licensed](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](LICENSE)
+---
+
 MongoEngine dependency provider for [Nameko](https://github.com/nameko/nameko) microservice framework.
 
 ## Installation
