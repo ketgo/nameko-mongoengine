@@ -1,0 +1,28 @@
+dist: xenial   # required for Python >= 3.7
+
+sudo: false
+
+language: python
+
+services:
+  - mongodb
+
+cache: pip
+
+python:
+  - "3.6"
+  - "3.7"
+  - "nightly"  # nightly build
+
+before_script:
+  - sleep 15
+  - mongo db --eval 'db.createUser({user:"test_user",pwd:"test_password",roles:["readWrite"]});'
+
+install:
+  - make deps
+
+script:
+  - make coverage
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
