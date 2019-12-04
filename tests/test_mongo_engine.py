@@ -2,6 +2,8 @@
     Tests for dependency provider
 """
 
+import json
+
 import pytest
 from mongoengine import Document, fields
 from mongoengine.context_managers import switch_db
@@ -81,35 +83,83 @@ def test_setup(dependency_provider, config):
     assert dependency_provider.aliases == config["MONGODB_URI"]
 
 
-@pytest.mark.parametrize("mongo_config, aliases", [
+@pytest.mark.parametrize("mongo_config, env, aliases", [
     (
+            {},
             {},
             {
                 "default": MongoEngine.default_connection_uri
             }
     ),
     (
+            {},
             {
-                MONGODB_URI_KEY: "mongodb://localhost/default"
+                MONGODB_URI_KEY: json.dumps({
+                    "default": "mongodb://localhost/default_env",
+                    "test": "mongodb://localhost/test_env"
+                })
             },
             {
-                "default": "mongodb://localhost/default"
+                "default": "mongodb://localhost/default_env",
+                "test": "mongodb://localhost/test_env"
+            }
+    ),
+    (
+            {},
+            {
+                MONGODB_URI_KEY: "mongodb://localhost/default_env"
+            },
+            {
+                "default": "mongodb://localhost/default_env"
+            }
+    ),
+    (
+            {
+                MONGODB_URI_KEY: "mongodb://localhost/default_conf"
+            },
+            {
+                MONGODB_URI_KEY: "mongodb://localhost/default_env"
+            },
+            {
+                "default": "mongodb://localhost/default_conf"
             }
     ),
     (
             {
                 MONGODB_URI_KEY: {
-                    "default": "mongodb://localhost/default",
-                    "test": "mongodb://localhost/test"
+                    "default": "mongodb://localhost/default_conf",
+                    "test": "mongodb://localhost/test_conf"
                 }
             },
             {
-                "default": "mongodb://localhost/default",
-                "test": "mongodb://localhost/test"
+                MONGODB_URI_KEY: "mongodb://localhost/default_env"
+            },
+            {
+                "default": "mongodb://localhost/default_conf",
+                "test": "mongodb://localhost/test_conf"
+            }
+    ),
+    (
+            {
+                MONGODB_URI_KEY: {
+                    "default": "mongodb://localhost/default_conf",
+                    "test": "mongodb://localhost/test_conf"
+                }
+            },
+            {
+                MONGODB_URI_KEY: json.dumps({
+                    "default": "mongodb://localhost/default_env",
+                    "test": "mongodb://localhost/test_env"
+                })
+            },
+            {
+                "default": "mongodb://localhost/default_conf",
+                "test": "mongodb://localhost/test_conf"
             }
     ),
 ])
-def test_parse_config(mock_container, mongo_config, aliases):
+def test_parse_config(mocker, mock_container, mongo_config, env, aliases):
+    mocker.patch('os.environ', env)
     dep = MongoEngine().bind(mock_container, 'engine')
     dep.container.config = mongo_config
     dep._parse_config()

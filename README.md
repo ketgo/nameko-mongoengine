@@ -45,7 +45,7 @@ class MockService:
         return MyModel.objects.get(id=_id)
 ```
 
-The dependency `engine` exposes standard `pymongo` interface to database connection. The default `MongoEngine` database connection can be accessed by:
+The dependency `engine` exposes standard `pymongo` interface to database connections. The default connection can be accessed by the `db` property:
 ```python
 class MockService:
     name = "mock_service"

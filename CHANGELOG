@@ -1,0 +1,3 @@
+# Version 0.1.1
+
+- fixed configuration parser to read from environment variables

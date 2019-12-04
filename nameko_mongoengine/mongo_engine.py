@@ -2,6 +2,9 @@
     Mongoengine dependency provider extension
 """
 
+import json
+import os
+
 from mongoengine.connection import register_connection, disconnect, DEFAULT_CONNECTION_NAME
 from nameko.extensions import DependencyProvider  # pragma: no cover
 
@@ -20,7 +23,16 @@ class MongoEngine(DependencyProvider):
 
     def _parse_config(self):
         config = self.container.config
-        value = config.get(MONGODB_URI_KEY, self.default_connection_uri)
+        value = config.get(MONGODB_URI_KEY)
+        # Check environment variables if uri not found in config file
+        if not value:
+            _value = os.environ.get(MONGODB_URI_KEY, self.default_connection_uri)
+            # Check if aliases set in environment variable value
+            try:
+                value = json.loads(_value)
+            except Exception:
+                value = _value
+
         self.aliases = value if isinstance(value, dict) else {DEFAULT_CONNECTION_NAME: value}
 
     def setup(self):
