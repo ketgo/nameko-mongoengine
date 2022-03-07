@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-mongo}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password}
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672

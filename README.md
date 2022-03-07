@@ -63,6 +63,8 @@ def get(self, _id):
     return db.your_collection.find_one({'_id': _id})
 ```
 
+See full [example](https://github.com/ketgo/nameko-mongoengine/tree/master/example) for more details.
+
 ## Configurations
 
 The dependency configurations can be set in nameko `config.yaml` [file](https://docs.nameko.io/en/stable/cli.html), or by environment variables. 

@@ -1,0 +1,15 @@
+MONGODB_URI:
+    default: "mongodb://mongo:password@localhost/default?authSource=admin"
+    test: "mongodb://mongo:password@localhost/test?authSource=admin"
+AMQP_URI: amqp://${AMQP_HOST:localhost}:${AMQP_PORT:5672}
+rpc_exchange: 'nameko-rpc'
+max_workers: 10
+parent_calls_tracked: 10
+LOGGING:
+    version: 1
+    handlers:
+        console:
+            class: logging.StreamHandler
+    root:
+        level: DEBUG
+        handlers: [console]
